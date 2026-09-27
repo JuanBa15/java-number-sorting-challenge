@@ -36,8 +36,8 @@ public class ConsoleMenu {
                 case 1 -> generateFile();
                 case 2 -> readGenerateFile();
                 case 3 -> sortGeneratedFile();
-                case 4 -> System.out.println("Leer archivo ordenado: pendiente");
-                case 5 -> System.out.println("Buscar número: pendiente");
+                case 4 -> readSortedFile();
+                case 5 -> searchNumber();
                 case 6 -> {
                     System.out.println("Hasta luego.");
                     running = false;
@@ -92,26 +92,10 @@ public class ConsoleMenu {
     }
 
     private void readGenerateFile() {
-        NumberFileRepository repository =
-                new NumberFileRepository(Path.of("data", "numbers.txt"));
-
-        try {
-            List<BigDecimal> numbers = repository.read();
-
-            if (numbers.isEmpty()) {
-                System.out.println("El archivo no contiene números.");
-                return;
-            }
-
-            System.out.println("Números del archivo:");
-            for (BigDecimal number : numbers) {
-                System.out.println(number.toPlainString());
-            }
-        } catch (IOException e) {
-            System.out.println("No se pudo leer el archivo o no está creado, verifique: " + e.getMessage());
-        } catch (IllegalArgumentException e) {
-            System.out.println("No se pudo interpretar el archivo: " + e.getMessage());
-        }
+        readFile(
+                Path.of("data", "numbers.txt"),
+                "Números del archivo generado:"
+        );
     }
 
     private void sortGeneratedFile() {
@@ -137,6 +121,111 @@ public class ConsoleMenu {
         } catch (IllegalArgumentException e) {
             System.out.println("No se pudo interpretar el archivo: "
                     + e.getMessage());
+        }
+    }
+
+    private void readSortedFile() {
+        readFile(
+                Path.of("data", "numbers-sorted.txt"),
+                "Números del archivo ordenado:"
+        );
+    }
+
+    private void readFile(Path filePath, String title) {
+        NumberFileRepository repository =
+                new NumberFileRepository(filePath);
+
+        try {
+            List<BigDecimal> numbers = repository.read();
+
+            if (numbers.isEmpty()) {
+                System.out.println("El archivo no contiene números.");
+                return;
+            }
+
+            System.out.println(title);
+
+            for (int i = 0; i < numbers.size(); i++) {
+                System.out.printf(
+                        "%d: %s%n",
+                        i + 1,
+                        numbers.get(i).toPlainString()
+                );
+            }
+        } catch (IOException e) {
+            System.out.println(
+                    "No se pudo leer el archivo. Verifique que exista: " + e.getMessage()
+            );
+        } catch (IllegalArgumentException e) {
+            System.out.println(
+                    "No se pudo interpretar el archivo: " + e.getMessage()
+            );
+        }
+    }
+
+    private void searchNumber() {
+
+        System.out.println("¿En qué archivo desea buscar?");
+        System.out.println("1 - Original (archivo con los números sin ordenar)");
+        System.out.println("2 - Ordenado (archivo con los números ordenados)");
+        System.out.print("Seleccione: ");
+        String option = scanner.nextLine().trim();
+
+        Integer fileOption = new Integer(option);
+        Path filePath;
+
+        switch (fileOption) {
+            case 1 -> filePath = Path.of("data", "numbers.txt");
+            case 2 -> filePath = Path.of("data", "numbers-sorted.txt");
+            default -> {
+                System.out.println("Opción de archivo no válida.");
+                return;
+            }
+        }
+
+        NumberFileRepository repository = new NumberFileRepository(filePath);
+
+        System.out.print("¿Qué número desea buscar?: ");
+        String input = scanner.nextLine().trim();
+
+        BigDecimal target;
+
+        try {
+            target = new BigDecimal(input);
+        } catch (NumberFormatException e) {
+            System.out.println("Ingrese un número válido, por ejemplo: -6.25");
+            return;
+        }
+
+        try {
+            List<BigDecimal> numbers = repository.read();
+
+            if (numbers.isEmpty()) {
+                System.out.println("El archivo no contiene números.");
+                return;
+            }
+
+            NumberSearch searcher = new NumberSearch();
+            List<Integer> positions = searcher.findPosition(numbers, target);
+
+            if (positions.isEmpty()) {
+                System.out.println("Número " + target.toPlainString() + " no encontrado.");
+            } else {
+                System.out.println(
+                        "Número " + target.toPlainString()
+                                + " encontrado en " + filePath
+                                + " en la posición o posiciones: "
+                                + positions
+                );
+            }
+        } catch (IOException e) {
+            System.out.println(
+                    "No se pudo leer el archivo. Genérelo primero: " + e.getMessage()
+            );
+        } catch (IllegalArgumentException e) {
+            System.out.println(
+                    "No se pudo interpretar el archivo: " + e.getMessage()
+            );
         }
     }
 }
