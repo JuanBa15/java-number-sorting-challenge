@@ -171,7 +171,15 @@ public class ConsoleMenu {
         System.out.print("Seleccione: ");
         String option = scanner.nextLine().trim();
 
-        Integer fileOption = new Integer(option);
+        int fileOption;
+
+        try {
+            fileOption = Integer.parseInt(option);
+        } catch (NumberFormatException e) {
+            System.out.println("Ingrese 1 o 2.");
+            return;
+        }
+
         Path filePath;
 
         switch (fileOption) {
@@ -209,13 +217,15 @@ public class ConsoleMenu {
             List<Integer> positions = searcher.findPosition(numbers, target);
 
             if (positions.isEmpty()) {
-                System.out.println("Número " + target.toPlainString() + " no encontrado.");
+                System.out.println(
+                        "Número " + target.toPlainString()
+                                + " no encontrado en " + filePath
+                );
             } else {
                 System.out.println(
                         "Número " + target.toPlainString()
                                 + " encontrado en " + filePath
-                                + " en la posición o posiciones: "
-                                + positions
+                                + " en la posición o posiciones: " + positions
                 );
             }
         } catch (IOException e) {
