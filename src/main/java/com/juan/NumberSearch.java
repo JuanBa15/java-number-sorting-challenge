@@ -6,7 +6,7 @@ import java.util.List;
 
 public class NumberSearch {
 
-    public List<Integer> findPosition(
+    public List<Integer> findPositions(
             List<BigDecimal> numbers,
             BigDecimal target //Número que quiero buscar
     ) {

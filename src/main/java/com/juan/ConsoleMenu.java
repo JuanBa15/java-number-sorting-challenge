@@ -1,6 +1,9 @@
 package com.juan;
 
 import com.juan.algorithms.MergeSort;
+import com.juan.algorithms.BubbleSort;
+import com.juan.algorithms.HeapSort;
+import com.juan.algorithms.QuickSort;
 
 import java.util.Scanner;
 import java.io.IOException;
@@ -99,6 +102,36 @@ public class ConsoleMenu {
     }
 
     private void sortGeneratedFile() {
+
+        System.out.println("¿Qué método de ordenamiento quiere utilizar?");
+        System.out.println("1 - Merge Sort");
+        System.out.println("2 - Quick Sort");
+        System.out.println("3 - Heap Sort");
+        System.out.println("4 - Bubble Sort");
+        System.out.print("Seleccione: ");
+
+        if (!scanner.hasNextInt()) {
+            System.out.println("Ingrese una opción numérica.");
+            scanner.nextLine();
+            return;
+        }
+
+        int option = scanner.nextInt();
+        scanner.nextLine();
+
+        SortingAlgorithm algorithm = switch (option) {
+            case 1 -> new MergeSort();
+            case 2 -> new QuickSort();
+            case 3 -> new HeapSort();
+            case 4 -> new BubbleSort();
+            default -> null;
+        };
+
+        if (algorithm == null) {
+            System.out.println("Opción de ordenamiento no válida.");
+            return;
+        }
+
         NumberFileRepository sourceRepository =
                 new NumberFileRepository(Path.of("data", "numbers.txt"));
 
@@ -108,12 +141,13 @@ public class ConsoleMenu {
         try {
             List<BigDecimal> numbers = sourceRepository.read();
 
-            SortingAlgorithm algorithm = new MergeSort();
             List<BigDecimal> sortedNumbers = algorithm.sort(numbers);
 
             sortedRepository.save(sortedNumbers);
 
-            System.out.println("Archivo ordenado con Merge Sort.");
+            System.out.println(
+                    "Archivo ordenado con " + algorithm.getClass().getSimpleName() + "."
+            );
             System.out.println("Resultado guardado en data/numbers-sorted.txt");
         } catch (IOException e) {
             System.out.println("No se pudo leer o guardar el archivo: "
@@ -214,7 +248,7 @@ public class ConsoleMenu {
             }
 
             NumberSearch searcher = new NumberSearch();
-            List<Integer> positions = searcher.findPosition(numbers, target);
+            List<Integer> positions = searcher.findPositions(numbers, target);
 
             if (positions.isEmpty()) {
                 System.out.println(
