@@ -24,9 +24,7 @@ public class BubbleSort implements SortingAlgorithm {
                 }
             }
 
-            if (!swapped) {
-                break;
-            }
+            if (!swapped) break;
         }
 
         return result;

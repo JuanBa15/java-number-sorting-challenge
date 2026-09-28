@@ -7,6 +7,10 @@ import java.util.Random;
 
 public class NumberGenerator {
 
+    private static final int MIN_CENTS = -10_000;
+    private static final int MAX_CENTS = 10_001;
+    private static final int DECIMAL_SCALE = 2;
+
     private final Random random = new Random();
 
     public List<BigDecimal> generate(int count) {
@@ -17,8 +21,8 @@ public class NumberGenerator {
         List<BigDecimal> numbers = new ArrayList<>();
 
         for (int i = 0; i < count; i++) {
-            int randomCents = random.nextInt(-10_000, 10_001);
-            BigDecimal number = BigDecimal.valueOf(randomCents, 2);
+            int randomCents = random.nextInt(MIN_CENTS, MAX_CENTS);
+            BigDecimal number = BigDecimal.valueOf(randomCents, DECIMAL_SCALE);
             numbers.add(number);
         }
 

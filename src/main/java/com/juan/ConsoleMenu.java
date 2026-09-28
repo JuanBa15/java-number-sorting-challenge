@@ -5,13 +5,16 @@ import com.juan.algorithms.BubbleSort;
 import com.juan.algorithms.HeapSort;
 import com.juan.algorithms.QuickSort;
 
-import java.util.Scanner;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Scanner;
 
 public class ConsoleMenu {
+
+    private static final Path GENERATED_FILE = Path.of("data", "numbers.txt");
+    private static final Path SORTED_FILE = Path.of("data", "numbers-sorted.txt");
     private final Scanner scanner;
 
     public ConsoleMenu(Scanner scanner) {
@@ -26,19 +29,25 @@ public class ConsoleMenu {
         while (running) {
             System.out.print("Seleccione una opción: ");
 
+            // Salimos del menú si la entrada estándar se cerró o llegamos al final.
+            if (!scanner.hasNext()) {
+                System.out.println();
+                break;
+            }
+
             if (!scanner.hasNextInt()) {
                 System.out.println("Por favor, ingrese un número del menú.");
-                scanner.nextLine(); //Descarta la entrada inválida
+                scanner.nextLine(); //Descartamos la entrada inválida
                 continue;
             }
 
             int option = scanner.nextInt();
-            scanner.nextLine(); //Consume el salto de línea pendiente
+            scanner.nextLine(); //Consumimos el salto de línea pendiente
 
             switch (option) {
                 case 0 -> printMenu();
                 case 1 -> generateFile();
-                case 2 -> readGenerateFile();
+                case 2 -> readGeneratedFile();
                 case 3 -> sortGeneratedFile();
                 case 4 -> readSortedFile();
                 case 5 -> searchNumber();
@@ -83,8 +92,7 @@ public class ConsoleMenu {
         NumberGenerator generator = new NumberGenerator();
         List<BigDecimal> numbers = generator.generate(count);
 
-        NumberFileRepository repository =
-                new NumberFileRepository(Path.of("data", "numbers.txt"));
+        NumberFileRepository repository = new NumberFileRepository(GENERATED_FILE);
 
         try {
             repository.save(numbers);
@@ -95,49 +103,18 @@ public class ConsoleMenu {
         }
     }
 
-    private void readGenerateFile() {
-        readFile(
-                Path.of("data", "numbers.txt"),
-                "Números del archivo generado:"
-        );
+    private void readGeneratedFile() {
+        readFile(GENERATED_FILE, "Números del archivo generado:");
     }
 
     private void sortGeneratedFile() {
 
-        System.out.println("¿Qué método de ordenamiento quiere utilizar?");
-        System.out.println("1 - Merge Sort");
-        System.out.println("2 - Quick Sort");
-        System.out.println("3 - Heap Sort");
-        System.out.println("4 - Bubble Sort");
-        System.out.print("Seleccione: ");
+        SortingAlgorithm algorithm = chooseSortingAlgorithm();
 
-        if (!scanner.hasNextInt()) {
-            System.out.println("Ingrese una opción numérica.");
-            scanner.nextLine();
-            return;
-        }
+        if (algorithm == null) return;
 
-        int option = scanner.nextInt();
-        scanner.nextLine();
-
-        SortingAlgorithm algorithm = switch (option) {
-            case 1 -> new MergeSort();
-            case 2 -> new QuickSort();
-            case 3 -> new HeapSort();
-            case 4 -> new BubbleSort();
-            default -> null;
-        };
-
-        if (algorithm == null) {
-            System.out.println("Opción de ordenamiento no válida.");
-            return;
-        }
-
-        NumberFileRepository sourceRepository =
-                new NumberFileRepository(Path.of("data", "numbers.txt"));
-
-        NumberFileRepository sortedRepository =
-                new NumberFileRepository(Path.of("data", "numbers-sorted.txt"));
+        NumberFileRepository sourceRepository = new NumberFileRepository(GENERATED_FILE);
+        NumberFileRepository sortedRepository = new NumberFileRepository(SORTED_FILE);
 
         try {
             List<BigDecimal> numbers = sourceRepository.read();
@@ -146,17 +123,17 @@ public class ConsoleMenu {
 
             List<BigDecimal> sortedNumbers = algorithm.sort(numbers);
 
-            long endTime =  System.nanoTime(); //Registro el final
-            long elapsedNanos = endTime - startTime; //Duración de tiempo del algoritmo
+            long endTime = System.nanoTime(); //Registro el final
+            long differenceNanos = endTime - startTime; //Duración de tiempo del algoritmo
 
             System.out.println(
                     algorithm.getClass().getSimpleName()
-                            + " tardó " + elapsedNanos
+                            + " tardó " + differenceNanos
                             + " ns en ordenar " + numbers.size() + " números."
             );
 
             /*Hacemos después el guardado, porque el tiempo de guardado no nos
-            * interesa en la comparación de tiempos de los algoritmos.*/
+             * interesa en la comparación de tiempos de los algoritmos.*/
             sortedRepository.save(sortedNumbers);
 
             System.out.println(
@@ -172,16 +149,44 @@ public class ConsoleMenu {
         }
     }
 
+    private SortingAlgorithm chooseSortingAlgorithm() {
+        System.out.println("¿Qué método de ordenamiento quiere utilizar?");
+        System.out.println("1 - Merge Sort");
+        System.out.println("2 - Quick Sort");
+        System.out.println("3 - Heap Sort");
+        System.out.println("4 - Bubble Sort");
+        System.out.print("Seleccione: ");
+
+        if (!scanner.hasNextInt()) {
+            System.out.println("Ingrese una opción numérica.");
+            scanner.nextLine();
+            return null;
+        }
+
+        int option = scanner.nextInt();
+        scanner.nextLine();
+
+        SortingAlgorithm algorithm = switch (option) {
+            case 1 -> new MergeSort();
+            case 2 -> new QuickSort();
+            case 3 -> new HeapSort();
+            case 4 -> new BubbleSort();
+            default -> null;
+        };
+
+        if (algorithm == null) {
+            System.out.println("Opción de ordenamiento no válida.");
+        }
+
+        return algorithm;
+    }
+
     private void readSortedFile() {
-        readFile(
-                Path.of("data", "numbers-sorted.txt"),
-                "Números del archivo ordenado:"
-        );
+        readFile(SORTED_FILE, "Números del archivo ordenado:");
     }
 
     private void readFile(Path filePath, String title) {
-        NumberFileRepository repository =
-                new NumberFileRepository(filePath);
+        NumberFileRepository repository = new NumberFileRepository(filePath);
 
         try {
             List<BigDecimal> numbers = repository.read();
@@ -195,7 +200,7 @@ public class ConsoleMenu {
 
             for (int i = 0; i < numbers.size(); i++) {
                 System.out.printf(
-                        "%d: %s%n",
+                        "%d) %s%n",
                         i + 1,
                         numbers.get(i).toPlainString()
                 );
@@ -231,8 +236,8 @@ public class ConsoleMenu {
         Path filePath;
 
         switch (fileOption) {
-            case 1 -> filePath = Path.of("data", "numbers.txt");
-            case 2 -> filePath = Path.of("data", "numbers-sorted.txt");
+            case 1 -> filePath = GENERATED_FILE;
+            case 2 -> filePath = SORTED_FILE;
             default -> {
                 System.out.println("Opción de archivo no válida.");
                 return;
@@ -252,6 +257,13 @@ public class ConsoleMenu {
             System.out.println("Ingrese un número válido, por ejemplo: -6.25");
             return;
         }
+
+        searchInFile(filePath, target);
+    }
+
+    private void searchInFile(Path filePath, BigDecimal target) {
+        NumberFileRepository repository =
+                new NumberFileRepository(filePath);
 
         try {
             List<BigDecimal> numbers = repository.read();
@@ -278,7 +290,8 @@ public class ConsoleMenu {
             }
         } catch (IOException e) {
             System.out.println(
-                    "No se pudo leer el archivo. Genérelo primero: " + e.getMessage()
+                    "No se pudo leer el archivo. Genérelo primero: "
+                            + e.getMessage()
             );
         } catch (IllegalArgumentException e) {
             System.out.println(

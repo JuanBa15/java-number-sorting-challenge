@@ -11,6 +11,11 @@ public class QuickSort implements SortingAlgorithm {
     @Override
     public List<BigDecimal> sort(List<BigDecimal> numbers) {
         List<BigDecimal> result = new ArrayList<>(numbers);
+
+        if (result.size() < 2) {
+            return result;
+        }
+
         quickSort(result, 0, result.size() - 1);
         return result;
     }

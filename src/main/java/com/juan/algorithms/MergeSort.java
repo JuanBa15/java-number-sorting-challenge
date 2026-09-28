@@ -20,7 +20,7 @@ public class MergeSort implements SortingAlgorithm {
         return result;
     }
 
-    public void mergeSort(
+    private void mergeSort(
             List<BigDecimal> numbers,
             BigDecimal[] temporary,
             int start,
@@ -35,7 +35,7 @@ public class MergeSort implements SortingAlgorithm {
         merge(numbers, temporary, start, middle, end);
     }
 
-    public void merge(
+    private void merge(
             List<BigDecimal> numbers,
             BigDecimal[] temporary,
             int start,
