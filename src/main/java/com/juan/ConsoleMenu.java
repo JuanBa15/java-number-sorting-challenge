@@ -244,8 +244,6 @@ public class ConsoleMenu {
             }
         }
 
-        NumberFileRepository repository = new NumberFileRepository(filePath);
-
         System.out.print("¿Qué número desea buscar?: ");
         String input = scanner.nextLine().trim();
 
@@ -262,8 +260,7 @@ public class ConsoleMenu {
     }
 
     private void searchInFile(Path filePath, BigDecimal target) {
-        NumberFileRepository repository =
-                new NumberFileRepository(filePath);
+        NumberFileRepository repository = new NumberFileRepository(filePath);
 
         try {
             List<BigDecimal> numbers = repository.read();
