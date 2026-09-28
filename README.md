@@ -24,6 +24,16 @@ Desde una terminal con Maven instalado también se puede compilar con:
 mvn clean package
 ```
 
+## Ejecutar con Docker
+
+La imagen del proyecto está publicada en [Docker Hub](https://hub.docker.com/r/juanba15/java-number-sorter). Con Docker instalado y en ejecución, abre una terminal y ejecuta:
+
+```bash
+docker container run --rm -it juanba15/java-number-sorter:1.0
+```
+
+Docker descargará la imagen automáticamente si todavía no está disponible en la máquina. `-it` permite interactuar con el menú desde la terminal y `--rm` elimina el contenedor al salir de la aplicación.
+
 ## Funcionalidades
 
 | Opción | Función |
