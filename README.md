@@ -1,12 +1,12 @@
 # Ordenador de números
 
-Aplicación de consola en Java para generar números aleatorios, guardarlos en archivos de texto y ordenarlos. Proyecto desarrollado como solución al *Internship Quick Challenge*.
+Aplicación de consola en Java desarrollada como solución al *Internship Quick Challenge*. Genera números aleatorios, los guarda en un archivo, permite consultarlos y los ordena con distintos algoritmos.
 
 ## Requisitos
 
 - JDK 25
-- IntelliJ IDEA
-- Maven (opcional desde la terminal; IntelliJ también puede importar y ejecutar el proyecto Maven)
+- IntelliJ IDEA (recomendado para abrir y ejecutar el proyecto)
+- Maven, si se desea compilar desde la terminal
 
 El proyecto no utiliza dependencias externas.
 
@@ -14,11 +14,11 @@ El proyecto no utiliza dependencias externas.
 
 1. Clona el repositorio o descárgalo desde GitHub.
 2. En IntelliJ IDEA, selecciona **File → Open** y elige la carpeta del proyecto.
-3. Si IntelliJ pregunta, impórtalo como proyecto Maven.
-4. Configura el JDK 25 como SDK del proyecto.
+3. Importa o sincroniza el proyecto como Maven si IntelliJ lo solicita.
+4. Configura JDK 25 como SDK del proyecto.
 5. Abre `src/main/java/com/juan/Main.java` y ejecuta `Main.main()` con el botón verde junto al método.
 
-También puedes compilarlo desde una terminal que tenga Maven instalado:
+Desde una terminal con Maven instalado también se puede compilar con:
 
 ```bash
 mvn clean package
@@ -26,31 +26,36 @@ mvn clean package
 
 ## Funcionalidades
 
-| Opción | Función | Estado |
-|---|---|---|
-| 0 | Mostrar el menú | Implementada |
-| 1 | Generar números aleatorios y guardarlos en `data/numbers.txt` | Implementada |
-| 2 | Leer y mostrar `data/numbers.txt` | Implementada |
-| 3 | Ordenar con Merge Sort y guardar en `data/numbers-sorted.txt` | Implementada |
-| 4 | Leer y mostrar el archivo ordenado | Pendiente |
-| 5 | Buscar un número en el archivo | Pendiente |
-| 6 | Salir | Implementada |
+| Opción | Función |
+|---|---|
+| 0 | Mostrar el menú |
+| 1 | Generar números aleatorios y guardarlos en `data/numbers.txt` |
+| 2 | Leer y mostrar el archivo original |
+| 3 | Elegir un algoritmo, ordenar los números y guardar el resultado en `data/numbers-sorted.txt`; también muestra el tiempo de ordenamiento |
+| 4 | Leer y mostrar el archivo ordenado |
+| 5 | Buscar un número en el archivo original o en el ordenado |
+| 6 | Salir |
 
-La generación produce números entre `-100.00` y `100.00`, con dos posiciones decimales. Los archivos de datos se crean dentro de `data/`, relativa al directorio de trabajo desde el cual se ejecuta el programa.
+La generación produce valores entre `-100.00` y `100.00`, con dos posiciones decimales. Cada número se almacena en una línea. Al mostrar las listas, las posiciones empiezan en 1.
+
+Los algoritmos disponibles son:
+
+- Merge Sort
+- Quick Sort
+- Bubble Sort
+
+La búsqueda compara los valores numéricamente; por ejemplo, `5`, `5.0` y `5.00` se consideran iguales. Cuando hay coincidencias repetidas, muestra todas sus posiciones dentro del archivo seleccionado.
+
+El tiempo se mide alrededor de la llamada al algoritmo con `System.nanoTime()` y se expresa en nanosegundos. Es una medición individual por ejecución; con listas pequeñas puede variar y no debe tomarse como una comparación concluyente de rendimiento.
 
 ## Organización del código
 
 - `Main`: punto de entrada de la aplicación.
-- `ConsoleMenu`: interacción con el usuario y despacho de opciones.
+- `ConsoleMenu`: menú e interacción con el usuario.
 - `NumberGenerator`: generación de valores usando `Random` y `BigDecimal`.
 - `NumberFileRepository`: lectura y escritura de números en archivos de texto.
-- `SortingAlgorithm`: contrato común para los algoritmos de ordenamiento.
-- `algorithms/MergeSort`: implementación de Merge Sort.
+- `NumberSearch`: búsqueda de valores y cálculo de sus posiciones.
+- `SortingAlgorithm`: contrato común de los algoritmos de ordenamiento.
+- `algorithms/MergeSort`, `algorithms/QuickSort` y `algorithms/BubbleSort`: implementaciones de ordenamiento.
 
-Cada número se almacena en una línea del archivo. Los resultados generados en `data/*.txt` y los archivos compilados de `target/` están excluidos de Git.
-
-## Próximos pasos
-
-- Implementar la lectura del archivo ordenado desde el menú.
-- Añadir búsqueda de números.
-- Incorporar otro algoritmo de ordenamiento y comparar sus tiempos de ejecución.
+Los archivos generados en `data/*.txt` y los archivos compilados en `target/` están excluidos de Git.
