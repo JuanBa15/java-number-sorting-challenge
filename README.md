@@ -29,10 +29,18 @@ mvn clean package
 La imagen del proyecto está publicada en [Docker Hub](https://hub.docker.com/r/juanba15/java-number-sorter). Con Docker instalado y en ejecución, abre una terminal y ejecuta:
 
 ```bash
+docker container run -it --name java-number-sorter juanba15/java-number-sorter:1.0
+```
+
+Este comando sigue el formato usado en el ejemplo del desafío. El contenedor conserva el nombre `java-number-sorter` después de que la aplicación termine. Para volver a iniciarlo, usa `docker container start -ai java-number-sorter`. Si quieres crearlo otra vez desde cero, primero elimina el anterior con `docker container rm java-number-sorter`.
+
+También puedes usar esta variante:
+
+```bash
 docker container run --rm -it juanba15/java-number-sorter:1.0
 ```
 
-Docker descargará la imagen automáticamente si todavía no está disponible en la máquina. `-it` permite interactuar con el menú desde la terminal y `--rm` elimina el contenedor al salir de la aplicación.
+Docker descargará la imagen automáticamente si todavía no está disponible en la máquina. `-it` permite interactuar con el menú desde la terminal; en esta variante, `--rm` elimina el contenedor al salir de la aplicación. Es una opción práctica para ejecutar el programa sin conservar el contenedor.
 
 ## Funcionalidades
 
