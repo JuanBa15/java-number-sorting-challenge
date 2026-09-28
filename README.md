@@ -32,7 +32,7 @@ La imagen del proyecto está publicada en [Docker Hub](https://hub.docker.com/r/
 docker container run -it --name java-number-sorter juanba15/java-number-sorter:1.0
 ```
 
-Este comando sigue el formato usado en el ejemplo del desafío. El contenedor conserva el nombre `java-number-sorter` después de que la aplicación termine. Para volver a iniciarlo, usa `docker container start -ai java-number-sorter`. Si quieres crearlo otra vez desde cero, primero elimina el anterior con `docker container rm java-number-sorter`.
+El contenedor conserva el nombre `java-number-sorter` después de que la aplicación termine. Para volver a iniciarlo, usa `docker container start -ai java-number-sorter`. Si quieres crearlo otra vez desde cero, primero elimina el anterior con `docker container rm java-number-sorter`.
 
 También puedes usar esta variante:
 
