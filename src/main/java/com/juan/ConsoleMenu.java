@@ -21,8 +21,9 @@ public class ConsoleMenu {
     public void run() {
         boolean running = true;
 
+        printMenu();
+
         while (running) {
-            printMenu();
             System.out.print("Seleccione una opción: ");
 
             if (!scanner.hasNextInt()) {
@@ -141,8 +142,21 @@ public class ConsoleMenu {
         try {
             List<BigDecimal> numbers = sourceRepository.read();
 
+            long startTime = System.nanoTime(); //Registro el inicio
+
             List<BigDecimal> sortedNumbers = algorithm.sort(numbers);
 
+            long endTime =  System.nanoTime(); //Registro el final
+            long elapsedNanos = endTime - startTime; //Duración de tiempo del algoritmo
+
+            System.out.println(
+                    algorithm.getClass().getSimpleName()
+                            + " tardó " + elapsedNanos
+                            + " ns en ordenar " + numbers.size() + " números."
+            );
+
+            /*Hacemos después el guardado, porque el tiempo de guardado no nos
+            * interesa en la comparación de tiempos de los algoritmos.*/
             sortedRepository.save(sortedNumbers);
 
             System.out.println(
