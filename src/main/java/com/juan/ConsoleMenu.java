@@ -2,7 +2,6 @@ package com.juan;
 
 import com.juan.algorithms.MergeSort;
 import com.juan.algorithms.BubbleSort;
-import com.juan.algorithms.HeapSort;
 import com.juan.algorithms.QuickSort;
 
 import java.io.IOException;
@@ -153,8 +152,7 @@ public class ConsoleMenu {
         System.out.println("¿Qué método de ordenamiento quiere utilizar?");
         System.out.println("1 - Merge Sort");
         System.out.println("2 - Quick Sort");
-        System.out.println("3 - Heap Sort");
-        System.out.println("4 - Bubble Sort");
+        System.out.println("3 - Bubble Sort");
         System.out.print("Seleccione: ");
 
         if (!scanner.hasNextInt()) {
@@ -169,8 +167,7 @@ public class ConsoleMenu {
         SortingAlgorithm algorithm = switch (option) {
             case 1 -> new MergeSort();
             case 2 -> new QuickSort();
-            case 3 -> new HeapSort();
-            case 4 -> new BubbleSort();
+            case 3 -> new BubbleSort();
             default -> null;
         };
 

@@ -24,7 +24,7 @@ public class BubbleSort implements SortingAlgorithm {
                 }
             }
 
-            if (!swapped) break;
+            if (!swapped) break; // La lista ya se encuentra ordenada, así que no hay nada que seguir revisando
         }
 
         return result;
